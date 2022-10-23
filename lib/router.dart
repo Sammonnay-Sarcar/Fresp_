@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresp/features/address/screen/address_screen.dart';
+import 'package:fresp/features/admin/screens/add_product_screen.dart';
 import 'package:fresp/features/auth/screens/auth_screen.dart';
 import 'package:fresp/common/widgets/bottom_bar.dart';
 import 'package:fresp/features/cart/screen/cart_screen.dart';
@@ -43,7 +44,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => const BottomBarScreen(),
       );
-    // case UserScreen.routename:
+    case AddProductScreen.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const AddProductScreen(),
+      );
 
     default:
       return MaterialPageRoute(
