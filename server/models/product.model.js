@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+ 
 const productSchema = mongoose.Schema({
     name: {
         type: String,
@@ -13,13 +13,11 @@ const productSchema = mongoose.Schema({
         type: String,
         default: ''
     },
-    image: {
+     images: [{
         type: String,
-        default: ''
-    },
-    images: [{
-        type: String
-    }],
+        required:true
+     }],
+   
     brand: {
         type: String,
         default: ''
