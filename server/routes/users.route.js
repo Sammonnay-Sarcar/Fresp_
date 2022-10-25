@@ -34,13 +34,13 @@ router.get('/getUser', auth , async(req,res)=>{
         
         const userLoginDetail = await loginCredential.findById(req.user);
         const user = await User.findOne({'email': userLoginDetail.email});
-        console.log(userLoginDetail);
+       
         const userObj ={
             email: user.email,
             token: req.token,
             isAdmin: userLoginDetail.isAdmin
         }
-        console.log(userObj);
+       
         res.json(userObj);
     }catch(e){
         res.status(500).json({error : e.message});
