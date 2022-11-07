@@ -1,13 +1,13 @@
 const {loginCredential} = require('../models/loginCredential.model');
 const {Address}= require("../models/address.model");
-const {User} = require("../models/users.model")
+const {User} = require("../models/users.model");
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { json } = require('express');
 const auth = require('../middlewares/auth.middleware');
-
+const {Product} = require ("../models/product.model");
 
 router.post('/', async(req, res)=>{
     let checkUser =await User.findOne({email: req.body.email});
@@ -118,24 +118,34 @@ router.post('/tokenIsValid', async (req,res) => {
         res.status(500).json({error : e.message}); 
     }
 })
-router.post("/address", async(req, res)=>{
+router.post("/address",auth, async(req, res)=>{
     let address = new Address({
         street: req.body.street,
-        apartment: req.body.apt,
+        apartment: req.body.apartment,
         zip: req.body.zip,
         city: req.body.city,
-        country: req.body.country
+     
     });
-    address = await address.save();
-    const user = req.headers.authorization;
-    const token = user.split(' ');
-    const id = jwt.verify(token[1], process.env.SECRET);
-    let addressUpdate = await User.findOne({email: id.email});
+    address = await address.save(); 
+   
+    let addressUpdate = await User.findOne({email: req.email});
     
     addressUpdate.address.push(address);
     addressUpdate = await addressUpdate.save()
     .then((addressRes)=>{return res.send(addressRes)})
     .catch((err)=>{return res.status(400).send('the user address cannot be updated')});
+}) 
+router.get("/address/", auth, async(req,res)=>{
+    try{
+        const id = req.params.id;
+        const user = await User.findOne({email: req.email}).populate('address');
+        const UserAddress= user.address;
+        console.log(UserAddress);
+      
+        res.send(UserAddress);
+    }catch(e){
+        res.status(500).json({error: e.message})
+    }
 })
 router.put("/address/:id", async(req,res)=>{
     let address = Address.findByIdAndUpdate(
@@ -178,6 +188,64 @@ router.delete("/address/:id", async (req,res)=>{
     })
 })
 
+router.post("/add-to-cart", auth, async (req, res) => {
+    try {
+      
+      const { id } = req.body;
+      const product = await Product.findById(id);
+      
+      let user = await User.findOne({email : req.email});
+     
+      if (user.cart.length == 0) {
+        user.cart.push({ product, quantity: req.body.quantity });
+      } else {
+        let isProductFound = false;
+        for (let i = 0; i < user.cart.length; i++) {
+          if (user.cart[i].product._id.equals(product._id)) {
+            isProductFound = true;
+          }
+        }
+  
+        if (isProductFound) {
+          let producttt = user.cart.find((productt) =>
+            productt.product._id.equals(product._id)
+          );
+          producttt.quantity += req.body.quantity;
+        } else {
+          user.cart.push({ product, quantity: req.body.quantity });
+        }
+      }
+      user = await user.save();
+     
+      res.json(user);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+  
+  router.delete("/remove-from-cart/:id", auth, async (req, res) => {
+    try {
+ 
+      const id  = req.params.id;
+      const product = await Product.findById(id);
+      let user = await User.findOne({email: req.email});
+ 
+      for (let i = 0; i < user.cart.length; i++) {
+        if (user.cart[i].product._id.equals(product._id)) {
+          if (user.cart[i].quantity == 1) {
+            user.cart.splice(i, 1);
+          } else {
+            user.cart[i].quantity -= 1;
+          }
+        }
+      }
+      user = await user.save();
+      console.log(user);
+      res.json(user);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
 module.exports = router;
 
 

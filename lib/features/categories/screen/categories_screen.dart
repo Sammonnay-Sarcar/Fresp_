@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:fresp/features/admin/services/admin_services.dart';
+import 'package:fresp/features/categories/widgets/categories_widgets.dart';
+import 'package:fresp/features/searched%20screen/screens/searched_screen.dart';
+import 'package:fresp/models/category.dart';
 
 import '../../../constants/global_variables.dart';
 
-class CategoriesScreen extends StatelessWidget {
+class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
+  List<CategoryList>? productCategories = [];
+  final AdminServices adminServices = AdminServices();
+  void getCategories() async {
+    var productCategoriesList = await adminServices.getCategories(context);
+    setState(() {
+      productCategories = productCategoriesList;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +56,15 @@ class CategoriesScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(child: Text('Categories screen')),
+      body: ListView.builder(
+        itemCount: productCategories?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return CategoriesWidget(
+            category: productCategories![index].name,
+            categoryId: productCategories![index].id,
+          );
+        },
+      ),
     );
   }
 }

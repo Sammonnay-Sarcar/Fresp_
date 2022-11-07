@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { productSchema } = require("./product.model");
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -25,6 +26,15 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'Order',
     }],
+    cart: [
+        {
+          product: productSchema,
+          quantity: {
+            type: Number,
+            required: true, 
+          },
+        },
+      ],
 });
 
 exports.User = mongoose.model('User', userSchema);

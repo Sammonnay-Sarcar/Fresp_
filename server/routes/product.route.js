@@ -51,17 +51,19 @@ router.get(`/getProduct`, async (req, res) =>{
     //      filter = {category: req.query.categories.split(',')}
     // }
     var category = req.query.category;
-    const productList = await Product.find({category: category}).populate('category');
+    const productList = await Product.find({category: category});
+    // .populate('category');
 
     if(!productList) {
         res.status(500).json({success: false})
     } 
+    
     res.send(productList);
 })
 
 
 router.get(`/:id`, async (req, res) =>{
-    const product = await Product.findById(req.params.id).populate('category');
+    const product = await Product.findById(req.params.id);
 
     if(!product) {
         res.status(500).json({success: false})

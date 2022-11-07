@@ -1,15 +1,20 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+
 import 'package:fresp/common/widgets/text_widget.dart';
 import 'package:fresp/common/widgets/utils.dart';
 import 'package:fresp/constants/global_variables.dart';
+import 'package:fresp/features/product/services/product_service.dart';
+import 'package:fresp/models/product.dart';
 
 class ProductDetails extends StatefulWidget {
   static const String routename = '/product-details';
-
+  final Product product;
   const ProductDetails({
     Key? key,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -17,6 +22,32 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetails> {
+  // Product product = Product(
+  //     name: '',
+  //     description: '',
+  //     images: [],
+  //     brand: '',
+  //     price: 0,
+  //     countInStock: 0);
+  final ProductService productService = ProductService();
+  // void getProduct() async {
+  //   var productRes = await productService.getProduct(context, widget.);
+  //   setState(() {
+  //     product = productRes;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getProduct();
+  }
+
+  void addToCart() {
+    productService.addToCart(context: context, product: widget.product);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
@@ -59,32 +90,31 @@ class _ProductDetailState extends State<ProductDetails> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextWidget(text: 'Product ID:', color: color, textSize: 15),
+                  TextWidget(
+                      text: widget.product.brand, color: color, textSize: 15),
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
+            Padding(
+              padding: const EdgeInsets.symmetric(
                 vertical: 20,
                 horizontal: 10,
               ),
               child: Text(
-                'Product Name:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                widget.product.name,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
                 height: size.height * 0.40,
                 child: Swiper(
                   itemBuilder: (BuildContext context, int index) {
-                    return Image.network(
-                        'https://media.istockphoto.com/photos/farm-market-in-the-fall-apples-picture-id1088157488',
-                        height: 300,
-                        width: 500,
-                        fit: BoxFit.fill);
+                    return Image.network(widget.product.images[index],
+                        height: 300, width: 500, fit: BoxFit.fill);
                   },
                   autoplay: false,
-                  itemCount: 4,
+                  itemCount: widget.product.images.length,
                   // ignore: prefer_const_constructors
                   pagination: SwiperPagination(
                       alignment: Alignment.bottomCenter,
@@ -109,7 +139,7 @@ class _ProductDetailState extends State<ProductDetails> {
                     ),
                     children: [
                       TextSpan(
-                        text: ' Rs.100 ',
+                        text: (widget.product.price).toString(),
                         style: const TextStyle(
                           fontSize: 22,
                           color: Colors.red,
@@ -119,10 +149,10 @@ class _ProductDetailState extends State<ProductDetails> {
                     ]),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                'Product Description',
+                widget.product.description,
                 style: TextStyle(fontSize: 15),
               ),
             ),
@@ -159,7 +189,7 @@ class _ProductDetailState extends State<ProductDetails> {
                   borderRadius: BorderRadius.circular(5),
                   child: InkWell(
                       borderRadius: BorderRadius.circular(12),
-                      onTap: () {},
+                      onTap: addToCart,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 90, vertical: 10),

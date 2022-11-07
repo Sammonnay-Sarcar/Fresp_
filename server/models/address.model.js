@@ -21,11 +21,7 @@ const addressSchema = new mongoose.Schema({
         default: '',
         // required: true
     },
-    country: {
-        type: String,
-        default: '',
-        // required: true
-    }
 });
 
 exports.Address = mongoose.model('Address', addressSchema);
+ 

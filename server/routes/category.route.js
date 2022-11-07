@@ -18,7 +18,6 @@ router.get(`/`, async (req, res) =>{
     if(!categoryList) {
         res.status(500).json({success: false})
     } 
-    console.log(categoryList);
     res.status(200).send(categoryList); 
 })
 router.get('/:id', async(req,res)=>{
