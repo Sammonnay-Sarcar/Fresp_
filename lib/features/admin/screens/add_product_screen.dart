@@ -53,7 +53,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           brand: brandController.text,
           description: descriptionController.text,
           price: double.parse(priceController.text),
-          quantity: double.parse(quantityController.text),
+          quantity: int.parse(quantityController.text),
           category: category,
           images: images);
     }
@@ -61,7 +61,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   void getCategories() async {
     var productCategoriesList = await adminServices.getCategories(context);
-    print(productCategoriesList[0].name);
 
     setState(() {
       productCategories = productCategoriesList;
@@ -193,8 +192,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   value: category,
                   icon: const Icon(FeatherIcons.arrowDown),
                   items: productCategories?.map((CategoryList item) {
-                    print(item.id);
-                    print("next");
                     return DropdownMenuItem(
                         value: item.id, child: Text(item.name));
                   }).toList(),

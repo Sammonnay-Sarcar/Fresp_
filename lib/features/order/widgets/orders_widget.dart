@@ -1,5 +1,11 @@
 import "package:flutter/material.dart";
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:fresp/common/widgets/text_widget.dart';
+import 'package:fresp/features/address/services/Address_services.dart';
+import 'package:fresp/features/order/widgets/custom_text_widget.dart';
+import 'package:fresp/models/address.dart';
+import 'package:fresp/providers/user_detail_provider.dart';
+import 'package:provider/provider.dart';
 
 class OrdersWidget extends StatefulWidget {
   const OrdersWidget({Key? key}) : super(key: key);
@@ -9,76 +15,89 @@ class OrdersWidget extends StatefulWidget {
 }
 
 class _OrdersWidgetState extends State<OrdersWidget> {
-  final _quantityTextController = TextEditingController();
+  final AddressServices addressServices = AddressServices();
+
+  List<Address> addresses = [];
+
+  String? address = "fetching";
   @override
   void initState() {
-    _quantityTextController.text = '1';
     super.initState();
+    getAddresses();
+  }
+
+  void getAddresses() async {
+    var addressList = await addressServices.getAddress(context);
+    setState(() {
+      addresses = addressList;
+      address = addressList[0].id;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     //final Color color =Utils(context).color;
+    final user = Provider.of<UserDetailProvider>(context).user;
+    double sum = 0;
+    user.cart
+        .map((e) => sum += e['quantity'] * e['product']['price'] as double)
+        .toList();
 
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 90,
-                      width: 90,
+    String sum_round = sum.toStringAsFixed(2);
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          'Order Details:',
+          style: TextStyle(color: Colors.red[400], fontSize: 20),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          'Total Price: \₹$sum_round',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        Container(
+          height: 270,
+          child: ListView.builder(
+            itemCount: user.cart.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 0.0),
+                  child: Container(
+                      height: 50,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Image.network(
-                        'https://media.istockphoto.com/photos/farm-market-in-the-fall-apples-picture-id1088157488',
-                        width: 200,
-                        height: 150,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(
-                          text: '  Product Names',
-                          color: Colors.black,
-                          textSize: 20,
-                          isTitle: true,
+                          border: Border.all(width: 2, color: Colors.black12),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomTextWidget(
+                          index: index,
                         ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                            width: 150,
-                            child: Column(children: [
-                              TextWidget(
-                                text: '  total Amount :',
-                                color: Colors.black,
-                                textSize: 20,
-                                isTitle: true,
-                              ),
-                            ]))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                      )));
+            },
           ),
-        ],
-      ),
+        ),
+        const Text("Delivering to this address:"),
+        SizedBox(
+          width: double.infinity,
+          child: DropdownButton(
+            onChanged: (String? newValue) {
+              setState(() {
+                address = newValue!;
+              });
+            },
+            value: address,
+            icon: const Icon(FeatherIcons.arrowDown),
+            items: addresses.map((Address item) {
+              return DropdownMenuItem(
+                  value: item.id,
+                  child: Text('${item.apartment}+ ${item.street}'));
+            }).toList(),
+          ),
+        ),
+      ]),
     );
   }
 }

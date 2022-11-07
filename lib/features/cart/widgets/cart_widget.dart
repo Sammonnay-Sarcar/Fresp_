@@ -1,201 +1,191 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
-//import 'package:fresp/features/auth/widgets/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+
 import 'package:fresp/common/widgets/text_widget.dart';
+import 'package:fresp/common/widgets/utils.dart';
+import 'package:fresp/features/cart/services/cart_services.dart';
 import 'package:fresp/features/product/screen/product_details.dart';
+import 'package:fresp/features/product/services/product_service.dart';
+import 'package:fresp/models/product.dart';
+import 'package:fresp/providers/user_detail_provider.dart';
+import 'package:provider/provider.dart';
 
 //import 'package:fresp/router.dart';
 
 class CartWidget extends StatefulWidget {
-  const CartWidget({Key? key}) : super(key: key);
-
+  const CartWidget({
+    Key? key,
+    required this.index,
+  }) : super(key: key);
+  final int index;
   @override
   State<CartWidget> createState() => _CartWidgetState();
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  int cartcount = 0;
-  void incrementCount() {
-    setState(() {
-      cartcount++;
-      _quantityTextController.text = cartcount.toString();
-    });
-  }
-
-  void decrementCount() {
-    setState(() {
-      cartcount--;
-      _quantityTextController.text = cartcount.toString();
-    });
-  }
-
-  final _quantityTextController = TextEditingController();
   @override
-  void initState() {
-    _quantityTextController.text = cartcount.toString();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _quantityTextController.dispose();
-  }
-
   Widget build(BuildContext context) {
     //final Color color =Utils(context).color;
+    final productCart =
+        context.watch<UserDetailProvider>().user.cart[widget.index];
+    final product = Product.fromMap(productCart['product']);
+    final quantity = productCart['quantity'];
+    final ProductService productDetailsServices = ProductService();
+    final CartServices cartServices = CartServices();
+    void increaseQuantity(Product product) {
+      productDetailsServices.addToCart(
+        context: context,
+        product: product,
+      );
+    }
+
+    void decreaseQuantity(Product product) {
+      cartServices.removeFromCart(
+        context: context,
+        product: product,
+      );
+    }
 
     return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, ProductDetails.routename);
         },
-        child: Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 90,
-                        width: 90,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            'https://media.istockphoto.com/photos/farm-market-in-the-fall-apples-picture-id1088157488',
-                            width: 200,
-                            height: 150,
-                            fit: BoxFit.fill,
+        child: Container(
+          height: 120,
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 90,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              product.images[0],
+                              width: 200,
+                              height: 150,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextWidget(
-                              text: '  Text',
-                              color: Colors.black,
-                              textSize: 20,
-                              isTitle: true,
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            SizedBox(
-                              width: 150,
-                              child: Row(
-                                children: [
-                                  _quantityController(
-                                      fct: () => {decrementCount()},
-                                      icon: CupertinoIcons.minus,
-                                      color: Colors.red),
-                                  Flexible(
-                                    flex: 1,
-                                    child: TextField(
-                                      controller: _quantityTextController,
-                                      keyboardType: TextInputType.number,
-                                      maxLines: 1,
-                                      decoration: const InputDecoration(
-                                          focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide())),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9]'))
-                                      ],
-                                      onChanged: (v) {
-                                        setState(() {
-                                          if (v.isEmpty) {
-                                            _quantityTextController.text =
-                                                cartcount.toString();
-                                          } else {
-                                            return;
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  _quantityController(
-                                    fct: () => {incrementCount()},
-                                    icon: CupertinoIcons.plus,
-                                    color: Colors.green,
-                                  ),
-                                ],
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextWidget(
+                                text: product.name,
+                                color: Colors.black,
+                                textSize: 20,
+                                isTitle: true,
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              SizedBox(
+                                  width: 150,
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () => decreaseQuantity(product),
+                                        child: Container(
+                                          width: 35,
+                                          height: 32,
+                                          alignment: Alignment.center,
+                                          child: const Icon(
+                                            FeatherIcons.minus,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.black12,
+                                              width: 1.5),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(0),
+                                        ),
+                                        child: Container(
+                                          width: 35,
+                                          height: 32,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            quantity.toString(),
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () => increaseQuantity(product),
+                                        child: Container(
+                                          width: 35,
+                                          height: 32,
+                                          alignment: Alignment.center,
+                                          child: const Icon(
+                                            FeatherIcons.plus,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Column(
-                          children: [
-                            InkWell(
-                                onTap: () {},
-                                child: const Icon(
-                                  CupertinoIcons.cart_badge_minus,
-                                  color: Colors.red,
-                                  size: 20,
-                                )),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            TextWidget(
-                              text: 'Rs.100',
-                              color: Colors.black,
-                              textSize: 17,
-                              maxLines: 1,
-                            )
-                          ],
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                  onTap: () {},
+                                  child: const Icon(
+                                    CupertinoIcons.cart_badge_minus,
+                                    color: Colors.red,
+                                    size: 20,
+                                  )),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextWidget(
+                                text: product.price.toString(),
+                                color: Colors.black,
+                                textSize: 17,
+                                maxLines: 1,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      )
-                    ],
+                        const SizedBox(
+                          width: 5,
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
-        ));
-  }
-
-  Widget _quantityController({
-    required Function fct,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Flexible(
-      flex: 2,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Material(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              fct();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Icon(icon, size: 20, color: Colors.white),
-            ),
+              )
+            ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

@@ -8,6 +8,7 @@ import 'package:fresp/features/cart/screen/cart_screen.dart';
 import 'package:fresp/features/categories/screen/categories_screen.dart';
 import 'package:fresp/features/user/screen/user_screen.dart';
 import 'package:fresp/models/user.dart';
+import 'package:fresp/providers/user_detail_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user_provider.dart';
@@ -39,6 +40,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   double bottomBarWidth = 42;
   @override
   Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserDetailProvider>().user.cart.length;
     return Scaffold(
       body: _pages[_selectedindex],
       bottomNavigationBar: BottomNavigationBar(
@@ -97,7 +99,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               ),
               child: Badge(
                   elevation: 0,
-                  badgeContent: const Text('2'),
+                  badgeContent: Text(userCartLen.toString()),
                   badgeColor: Colors.white,
                   child: const Icon(FeatherIcons.shoppingCart)),
             ),
