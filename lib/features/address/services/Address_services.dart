@@ -61,7 +61,7 @@ class AddressServices {
         context: context,
         onSuccess: () {
           User user = userDetailProvider.user
-              .copyWith(cart: jsonDecode(res.body)['address']);
+              .copyWith(address: jsonDecode(res.body)['address']);
           userDetailProvider.setUserFromModel(user);
         });
   }

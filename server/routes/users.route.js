@@ -140,8 +140,6 @@ router.get("/address/", auth, async(req,res)=>{
         const id = req.params.id;
         const user = await User.findOne({email: req.email}).populate('address');
         const UserAddress= user.address;
-        console.log(UserAddress);
-      
         res.send(UserAddress);
     }catch(e){
         res.status(500).json({error: e.message})

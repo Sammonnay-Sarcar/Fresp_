@@ -55,126 +55,128 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: GlobalVariables.selectedNavBarColor,
         ),
         backgroundColor: GlobalVariables.greyBackgroundCOlor,
-        body: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                tileColor: _auth == Auth.signup
-                    ? GlobalVariables.backgroundColor
-                    : GlobalVariables.greyBackgroundCOlor,
-                title: const Text('Create Account',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-                leading: Radio(
-                  activeColor: GlobalVariables.secondaryColor,
-                  value: Auth.signup,
-                  groupValue: _auth,
-                  onChanged: (Auth? val) {
-                    setState(() {
-                      _auth = val!;
-                    });
-                  },
-                ),
-              ),
-              if (_auth == Auth.signup)
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  color: GlobalVariables.backgroundColor,
-                  child: Form(
-                    key: _signupFormKey,
-                    child: Column(children: [
-                      CustomTextField(
-                        controller: _emailController,
-                        hintText: 'Email',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        controller: _nameController,
-                        hintText: 'Name',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        controller: _phoneNumberController,
-                        hintText: 'Phone Number',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        controller: _passwordController,
-                        hintText: 'Password',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomButton(
-                          text: 'Connect with Google',
-                          backgroundColour: Color.fromARGB(255, 36, 83, 203),
-                          onTap: () => {}),
-                      const SizedBox(height: 10),
-                      CustomButton(
-                          text: 'Sign Up',
-                          backgroundColour: GlobalVariables.secondaryColor,
-                          onTap: () => {
-                                if (_signupFormKey.currentState!.validate())
-                                  signUpUser()
-                              })
-                    ]),
+        body: SingleChildScrollView(
+          child: SafeArea(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  tileColor: _auth == Auth.signup
+                      ? GlobalVariables.backgroundColor
+                      : GlobalVariables.greyBackgroundCOlor,
+                  title: const Text('Create Account',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  leading: Radio(
+                    activeColor: GlobalVariables.secondaryColor,
+                    value: Auth.signup,
+                    groupValue: _auth,
+                    onChanged: (Auth? val) {
+                      setState(() {
+                        _auth = val!;
+                      });
+                    },
                   ),
                 ),
-              ListTile(
-                tileColor: _auth == Auth.signin
-                    ? GlobalVariables.backgroundColor
-                    : GlobalVariables.greyBackgroundCOlor,
-                title: const Text('Sign in',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    )),
-                leading: Radio(
-                  activeColor: GlobalVariables.secondaryColor,
-                  value: Auth.signin,
-                  groupValue: _auth,
-                  onChanged: (Auth? val) {
-                    setState(() {
-                      _auth = val!;
-                    });
-                  },
-                ),
-              ),
-              if (_auth == Auth.signin)
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  color: GlobalVariables.backgroundColor,
-                  child: Form(
-                    key: _signinFormKey,
-                    child: Column(children: [
-                      CustomTextField(
-                        controller: _emailController,
-                        hintText: 'Email',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        controller: _passwordController,
-                        hintText: 'Password',
-                      ),
-                      const SizedBox(height: 10),
-                      CustomButton(
-                          text: 'Connect with Google',
-                          backgroundColour: Color.fromARGB(255, 36, 83, 203),
-                          onTap: () => {}),
-                      const SizedBox(height: 10),
-                      CustomButton(
-                          text: 'Sign in',
-                          backgroundColour: GlobalVariables.secondaryColor,
-                          onTap: () => {
-                                if (_signinFormKey.currentState!.validate())
-                                  signInUser()
-                              })
-                    ]),
+                if (_auth == Auth.signup)
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    color: GlobalVariables.backgroundColor,
+                    child: Form(
+                      key: _signupFormKey,
+                      child: Column(children: [
+                        CustomTextField(
+                          controller: _emailController,
+                          hintText: 'Email',
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          controller: _nameController,
+                          hintText: 'Name',
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          controller: _phoneNumberController,
+                          hintText: 'Phone Number',
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          controller: _passwordController,
+                          hintText: 'Password',
+                        ),
+                        const SizedBox(height: 10),
+                        // CustomButton(
+                        //     text: 'Connect with Google',
+                        //     backgroundColour: Color.fromARGB(255, 36, 83, 203),
+                        //     onTap: () => {}),
+                        // const SizedBox(height: 10),
+                        CustomButton(
+                            text: 'Sign Up',
+                            backgroundColour: GlobalVariables.secondaryColor,
+                            onTap: () => {
+                                  if (_signupFormKey.currentState!.validate())
+                                    signUpUser()
+                                })
+                      ]),
+                    ),
+                  ),
+                ListTile(
+                  tileColor: _auth == Auth.signin
+                      ? GlobalVariables.backgroundColor
+                      : GlobalVariables.greyBackgroundCOlor,
+                  title: const Text('Sign in',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )),
+                  leading: Radio(
+                    activeColor: GlobalVariables.secondaryColor,
+                    value: Auth.signin,
+                    groupValue: _auth,
+                    onChanged: (Auth? val) {
+                      setState(() {
+                        _auth = val!;
+                      });
+                    },
                   ),
                 ),
-            ],
-          ),
-        )));
+                if (_auth == Auth.signin)
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    color: GlobalVariables.backgroundColor,
+                    child: Form(
+                      key: _signinFormKey,
+                      child: Column(children: [
+                        CustomTextField(
+                          controller: _emailController,
+                          hintText: 'Email',
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          controller: _passwordController,
+                          hintText: 'Password',
+                        ),
+                        const SizedBox(height: 10),
+                        // CustomButton(
+                        //     text: 'Connect with Google',
+                        //     backgroundColour: Color.fromARGB(255, 36, 83, 203),
+                        //     onTap: () => {}),
+                        // const SizedBox(height: 10),
+                        CustomButton(
+                            text: 'Sign in',
+                            backgroundColour: GlobalVariables.secondaryColor,
+                            onTap: () => {
+                                  if (_signinFormKey.currentState!.validate())
+                                    signInUser()
+                                })
+                      ]),
+                    ),
+                  ),
+              ],
+            ),
+          )),
+        ));
   }
 }

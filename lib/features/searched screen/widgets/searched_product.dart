@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 import 'package:fresp/common/widgets/text_widget.dart';
 import 'package:fresp/features/product/screen/product_details.dart';
+import 'package:fresp/features/product/services/product_service.dart';
 import 'package:fresp/models/product.dart';
 
 class SearchedProduct extends StatelessWidget {
@@ -17,6 +19,11 @@ class SearchedProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductService productService = ProductService();
+    void addToCart() {
+      productService.addToCart(context: context, product: product);
+    }
+
     return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, ProductDetails.routename,
@@ -79,9 +86,9 @@ class SearchedProduct extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               InkWell(
-                                  onTap: () {},
+                                  onTap: addToCart,
                                   child: const Icon(
-                                    CupertinoIcons.cart_badge_minus,
+                                    (FeatherIcons.shoppingBag),
                                     color: Colors.red,
                                     size: 20,
                                   )),
