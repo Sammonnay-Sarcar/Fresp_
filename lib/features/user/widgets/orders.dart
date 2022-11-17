@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fresp/constants/global_variables.dart';
 import 'package:fresp/features/user/widgets/single_product.dart';
+import 'package:fresp/providers/user_detail_provider.dart';
+import 'package:provider/provider.dart';
 
 class Orders extends StatefulWidget {
   const Orders({super.key});
@@ -10,14 +12,9 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  List list = [
-    'https://images.unsplash.com/photo-1666433723497-38d1d053185b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-    'https://images.unsplash.com/photo-1666433723497-38d1d053185b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-    'https://images.unsplash.com/photo-1666433723497-38d1d053185b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-    'https://images.unsplash.com/photo-1666433723497-38d1d053185b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-  ];
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserDetailProvider>(context).user;
     return Column(
       children: [
         Row(
@@ -52,9 +49,10 @@ class _OrdersState extends State<Orders> {
           padding: const EdgeInsets.only(left: 10, top: 20, right: 0),
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: list.length,
+              itemCount: user.orderHistory.length,
               itemBuilder: ((context, index) {
-                return SingleProduct(image: list[index]);
+                return SingleProduct(
+                    orderId: user.orderHistory[index].toString());
               })),
         ),
       ],

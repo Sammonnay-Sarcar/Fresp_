@@ -1,12 +1,35 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:fresp/features/user/services/user_services.dart';
+import 'package:fresp/models/order.dart';
 
-class SingleProduct extends StatelessWidget {
-  final String image;
+class SingleProduct extends StatefulWidget {
+  final String orderId;
   const SingleProduct({
     Key? key,
-    required this.image,
+    required this.orderId,
   }) : super(key: key);
+
+  @override
+  State<SingleProduct> createState() => _SingleProductState();
+}
+
+class _SingleProductState extends State<SingleProduct> {
+  final UserServices userServices = UserServices();
+  Order order = Order(orderId: "", totalPrice: 0);
+
+  void getOrder() async {
+    var orderRes = await userServices.getOrder(context, widget.orderId);
+    setState(() {
+      order = orderRes;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getOrder();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +41,16 @@ class SingleProduct extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
             color: Colors.white),
         child: Container(
-          width: 180,
-          padding: const EdgeInsets.all(10),
-          child: Image.network(
-            image,
-            fit: BoxFit.fitHeight,
-            width: 180,
-          ),
-        ),
+            width: 140,
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(order.orderId),
+                Text((order.totalPrice).toString())
+              ],
+            )),
       ),
     );
   }

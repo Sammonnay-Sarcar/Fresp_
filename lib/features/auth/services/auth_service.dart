@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fresp/constants/error_handling.dart';
 import 'package:fresp/constants/global_variables.dart';
 import 'package:fresp/constants/utils.dart';
+import 'package:fresp/features/auth/screens/auth_screen.dart';
 import 'package:fresp/models/loginModel.dart';
 import 'package:fresp/models/user.dart';
 import 'package:fresp/providers/user_provider.dart';
@@ -127,6 +128,9 @@ class AuthService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('x-auth-token', '');
+      Navigator.pushNamedAndRemoveUntil(
+          context, AuthScreen.routeName, (route) => false);
+      ;
       showSnackBar(context, "logged out succesfully");
     } catch (e) {
       showSnackBar(context, e.toString());

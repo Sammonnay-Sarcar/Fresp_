@@ -5,6 +5,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 
 import 'package:fresp/common/widgets/utils.dart';
 import 'package:fresp/features/cart/screen/cart_screen.dart';
+import 'package:fresp/features/product/services/product_service.dart';
 import 'package:fresp/models/product.dart';
 
 import '../../features/product/screen/product_details.dart';
@@ -23,6 +24,11 @@ class SaleWidgetAdmin extends StatefulWidget {
 }
 
 class _SaleWidgetAdminState extends State<SaleWidgetAdmin> {
+  final ProductService productService = ProductService();
+  void addToCart() {
+    productService.addToCart(context: context, product: widget.product);
+  }
+
   Product? product;
   _SaleWidgetAdminState({required this.product});
   void navigateToCart() {
@@ -39,7 +45,9 @@ class _SaleWidgetAdminState extends State<SaleWidgetAdmin> {
     Size size = Utils(context).getscreenSize;
 
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          navigateToProduct(product?.id);
+        },
         child: Container(
             margin: const EdgeInsets.all(5),
             child: Material(
@@ -99,18 +107,20 @@ class _SaleWidgetAdminState extends State<SaleWidgetAdmin> {
                                           ),
                                           PriceWidget(price: product?.price),
                                           const SizedBox(height: 0.1),
-                                          TextWidget(
-                                              text: '1kg',
-                                              color: color,
-                                              textSize: 14,
-                                              isTitle: true),
+                                          // TextWidget(
+                                          //     text: '1kg',
+                                          //     color: color,
+                                          //     textSize: 14,
+                                          //     isTitle: true),
                                           const SizedBox(height: 0.1),
                                         ],
                                       ),
                                     ),
                                     Container(
-                                      child:
-                                          const Icon(FeatherIcons.shoppingBag),
+                                      child: InkWell(
+                                          onTap: addToCart,
+                                          child:
+                                              Icon(FeatherIcons.shoppingBag)),
                                     )
                                   ]),
                             )

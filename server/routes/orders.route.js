@@ -7,6 +7,7 @@ const Razorpay = require('razorpay');
 const { stringify } = require('querystring');
 const router = express.Router();
 const hash = require("hashcode").hashCode;
+const auth = require('../middlewares/auth.middleware');
 
 //environment variables
 const razorpay_key = process.env.Razorpay_key;
@@ -27,6 +28,7 @@ router.get(`/`, async (req, res) =>{
 })
 
 router.get(`/:id`, async (req, res) =>{
+    console.log(req.params.id);
     const order = await Order.findById(req.params.id)
     .populate('user', 'name')
     .populate({ 
@@ -37,14 +39,15 @@ router.get(`/:id`, async (req, res) =>{
     if(!order) {
         res.status(500).json({success: false})
     } 
-    res.send(order);
+    res.send({"orderId" : order._id, "totalPrice" : order.totalPrice});
 })
 
-router.post('/', async (req,res)=>{
+router.post('/',auth, async (req,res)=>{
+   
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) =>{
         let newOrderItem = new OrderItem({
             quantity: orderItem.quantity,
-            product: orderItem.product
+            product: orderItem.product._id
         })
 
         newOrderItem = await newOrderItem.save();
@@ -65,27 +68,26 @@ router.post('/', async (req,res)=>{
         orderItems: orderItemsIdsResolved,
         shippingAddress: req.body.addressId,
         phone: req.body.phone,
-        status: req.body.status,
         totalPrice: totalPrice,
         user: req.body.user,
     })
     order = await order.save().then(async(order)=>{
         const orderDetails = {
-            amount : totalPrice,
+            amount : totalPrice*100,
             currency : "INR",
             receipt : crypto.createHash('md5').update(stringify(order._id).concat(Date.now)).digest('hex'),
-            notes : req.body.notes
         }
         await razorpayInstance.orders.create((orderDetails),
         async (err, orderRes)=>{
             if(!err){
                 
                 order.order_id = orderRes.id;
-                order = order.save()
-                .then((orderRes)=>{
-                    res.send(orderRes);
-                })
-                .catch((err)=>{return res.status(400).send('the order cannot be updated')});
+                order = await order.save();
+                let user = await User.findOne({email: req.email});
+                
+                user.orderHistory.push(order._id);
+                user = await user.save();
+                res.send(orderRes.id);
             }
             else{
                 res.send(err);

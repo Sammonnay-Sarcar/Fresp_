@@ -76,7 +76,6 @@ class AdminServices {
           context: context,
           onSuccess: () {
             for (int i = 0; i < jsonDecode(categoryRes.body).length; i++) {
-              print("hello");
               categoryList.add(CategoryList.fromJson(
                   jsonEncode(jsonDecode(categoryRes.body)[i])));
             }
