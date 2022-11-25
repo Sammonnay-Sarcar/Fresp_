@@ -49,6 +49,7 @@ class AdminServices {
                 'x-auth-token': userProvider.user.token
               },
               body: product.toJson());
+      print(postRes);
       httpErrorHandle(
           response: postRes,
           context: context,

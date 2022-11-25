@@ -42,7 +42,7 @@ mongoose.connect(process.env.DB_CONNECTION_STRING, {
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to fresp" });
+  res.send({ message: "Welcome to fresp" });
 });
 
 app.use(`${api}/user`, userRoutes);
