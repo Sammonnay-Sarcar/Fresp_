@@ -8,7 +8,7 @@ class Product {
   final String? richDescription;
   final List<String> images;
   final String brand;
-  final double price;
+  double price;
   final String? category;
   final int countInStock;
   final int? rating;
