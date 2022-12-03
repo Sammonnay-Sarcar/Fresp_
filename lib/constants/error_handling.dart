@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:fresp/constants/utils.dart';
 import 'package:http/http.dart' as http;
 
+//creating the function for the error handling
+
 void httpErrorHandle(
     {required http.Response response,
     required BuildContext context,

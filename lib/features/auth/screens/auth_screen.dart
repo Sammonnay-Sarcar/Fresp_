@@ -54,7 +54,7 @@ class _AuthScreenState extends State<AuthScreen> {
           title: const Center(child: Text('Fresp')),
           backgroundColor: GlobalVariables.selectedNavBarColor,
         ),
-        backgroundColor: GlobalVariables.greyBackgroundCOlor,
+        backgroundColor: GlobalVariables.greyBackgroundColor,
         body: SingleChildScrollView(
           child: SafeArea(
               child: Padding(
@@ -65,7 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ListTile(
                   tileColor: _auth == Auth.signup
                       ? GlobalVariables.backgroundColor
-                      : GlobalVariables.greyBackgroundCOlor,
+                      : GlobalVariables.greyBackgroundColor,
                   title: const Text('Create Account',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -126,7 +126,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ListTile(
                   tileColor: _auth == Auth.signin
                       ? GlobalVariables.backgroundColor
-                      : GlobalVariables.greyBackgroundCOlor,
+                      : GlobalVariables.greyBackgroundColor,
                   title: const Text('Sign in',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,

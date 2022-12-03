@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+//here we are creating the login model for the app
 class LoginModel {
   final String id;
   final String name;
@@ -20,7 +21,7 @@ class LoginModel {
     required this.address,
     required this.orderHistory,
   });
-
+  //here we are mapping the credentials accordingly
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -46,9 +47,9 @@ class LoginModel {
       orderHistory: List<dynamic>.from((map['orderHistory'] as List<dynamic>)),
     );
   }
-
+  //encoding the json object to dart object
   String toJson() => json.encode(toMap());
-
+  //decoding it
   factory LoginModel.fromJson(String source) =>
       LoginModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

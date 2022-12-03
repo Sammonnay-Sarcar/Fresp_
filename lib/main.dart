@@ -11,6 +11,8 @@ import 'package:fresp/providers/user_provider.dart';
 import 'package:fresp/router.dart';
 import 'package:provider/provider.dart';
 
+//We are using asynchronous function to open the app
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -36,18 +38,22 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  //calling the Authservice class which contain the Signup User, SignIn User,
+  //and getUserData functions
   final AuthService authService = AuthService();
   @override
   void initState() {
     super.initState();
+    //calling the function the getUserData from the class stored in the
+    //variable authService
     authService.getUserData(context);
   }
-
+  //creating the widget MaterialApp
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Fresp',
+        title: 'Fresh',
         theme: ThemeData(
           scaffoldBackgroundColor: GlobalVariables.backgroundColor,
           colorScheme: const ColorScheme.light(
