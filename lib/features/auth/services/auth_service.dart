@@ -65,7 +65,7 @@ class AuthService {
       httpErrorHandle(
         response: res,
         context: context,
-        onSuccess: () async {
+        onSuccess: () async { 
           SharedPreferences prefs = await SharedPreferences.getInstance();
           print(res.body);
           Provider.of<UserProvider>(context, listen: false).setUser(res.body);
